@@ -48,8 +48,13 @@ export function VehicleProvider(props: VehicleProviderProps) {
     }
   }
 
+  //120000
+
   useEffect(() => {
-    getVehicleData();
+    setInterval(() => {
+      console.log("Run interval")
+      getVehicleData();
+    }, 60000);
   }, []);
 
   return (

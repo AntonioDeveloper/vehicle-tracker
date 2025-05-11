@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: 'https://develop-back-rota.rota361.com.br',
-  timeout: 10000,
+  timeout: 120000,
   headers: {
     'Content-Type': 'application/json',
     Authorization:
@@ -16,11 +16,11 @@ const axiosInstance = axios.create({
 export default async function acessAPI() {
   try {
     const response = await axiosInstance.get(
-      `/recruitment/vehicles/list-with-paginate?type=${'tracked'}&page=${1}`
+      `/recruitment/vehicles/list-with-paginate?type=${'tracked'}&page=${1}&perPage=${40}`
     );
     return {
       vehicles: response.data.content.vehicles,
-      locations: response.data.content.vehicles,
+      locations: response.data.content.locationVehicles,
     };
   } catch (error: any) {
     console.error('Erro ao buscar lista de veículos:', error);
