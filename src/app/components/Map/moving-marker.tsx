@@ -1,64 +1,72 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Marker} from '@vis.gl/react-google-maps';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+    AdvancedMarker,
+    InfoWindow,
+    useAdvancedMarkerRef
+} from '@vis.gl/react-google-maps';
 import VehicleContext from '@/app/context/VehicleContext';
+import MapMarker from './AdvancedMarker';
+//import { LatLngLiteral } from '@vis.gl/react-google-maps';
+
+interface LocationData {
+    id: string | number;
+    lat: number;
+    lng: number
+    // Outras propriedades da sua localização
+}
+//     const [infowindowOpen, setInfowindowOpen] = useState(false);
+//     const [markerRef, marker] = useAdvancedMarkerRef();
+
+//     const handleMarkerClick = () => {
+//         setInfowindowOpen(true);
+//     };
+
+//     return (
+//         <>
+//             <AdvancedMarker
+//                 ref={markerRef}
+//                 position={position}
+//                 onClick={handleMarkerClick}
+//             />
+//             {infowindowOpen && (
+//                 <InfoWindow
+//                     anchor={marker}
+//                     maxWidth={200}
+//                     onCloseClick={() => setInfowindowOpen(false)}
+//                 >
+//                     This is an example for the{' '}
+//                     <code style={{ whiteSpace: 'nowrap' }}>&lt;AdvancedMarker /&gt;</code>{' '}
+//                     combined with an Infowindow.
+//                 </InfoWindow>
+//             )}
+//         </>
+//     );
+// };
 
 export const MovingMarker = () => {
+    const { locations } = useContext(VehicleContext);
+    const [position, setPosition] = useState<LocationData[]>([]);
 
-  const {locations} = useContext(VehicleContext);
-
-  const [position, setPosition] = useState<google.maps.LatLngLiteral[]>([]);
-
-  // Mantém uma referência para o ID do intervalo
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (locations && locations.length > 0) {
-      const positionsArr = locations.map((loc: any) => ({
-        lat: loc.lat,
-        lng: loc.lng,
-      }));
-      setPosition(positionsArr);
-    } else {
-      setPosition([]); // Se locations estiver vazio, position também deve ser
-    }
-  }, [locations]);
-
-
-    // Loga a 'position' a cada 2 minutos
     useEffect(() => {
-      // Limpa o intervalo anterior se o componente for desmontado ou 'position' mudar
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-  
-      // 120000
-      // Configura um novo intervalo
-      intervalRef.current = setInterval(() => {
-        // console.log("position LAT:", position[0].lat, "position LON:", position[0].lng);
-        // console.log("LOC", locations);
-        // console.log("POS", position);
-      }, 60000); // 2 minutos em milissegundos
-  
-      // Função de limpeza para cancelar o intervalo quando o componente for desmontado
-      // return () => {
-      //   if (intervalRef.current) {
-      //     clearInterval(intervalRef.current);
-      //   }
-      // };
-    }, [position]); // Dependência em 'position' para reconfigurar o intervalo se a posição mudar
-  
-    // <Marker position={position[0]}></Marker>
-    // {locations.map((item: any, index: number) => (
-    //   <Marker key={index} position={item[index]}></Marker>
-    // ))}
+        if (locations && locations.length > 0) {
+            const positionsArr = locations.map((loc: any, index: number) => ({
+                lat: loc.lat,
+                lng: loc.lng,
+                id: index, // Ou algum ID único da sua data
+            }));
+            setPosition(positionsArr);
+        } else {
+            setPosition([]);
+        }
+    }, [locations]);
+
     console.log("POS", position);
-  return (
-    <div>
-      {position.map((item: any, index: number) => {
-        return (
-          <Marker key={index} position={item}></Marker>
-        )
-      })}
-    </div>
-  );
+
+    return (
+        <>
+            {position.map((item: LocationData) => (
+                <MapMarker key={`${item.id}a`} position={item} />
+            ))}
+        </>
+    );
 };

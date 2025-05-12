@@ -54,7 +54,7 @@ export function VehicleProvider(props: VehicleProviderProps) {
     setInterval(() => {
       console.log("Run interval")
       getVehicleData();
-    }, 60000);
+    }, 30000);
   }, []);
 
   return (
