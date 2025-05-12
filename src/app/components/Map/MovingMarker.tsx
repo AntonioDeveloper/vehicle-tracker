@@ -1,18 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-    AdvancedMarker,
-    InfoWindow,
-    useAdvancedMarkerRef
-} from '@vis.gl/react-google-maps';
 import VehicleContext from '@/app/context/VehicleContext';
 import MapMarker from './AdvancedMarker';
-//import { LatLngLiteral } from '@vis.gl/react-google-maps';
 
-interface LocationData {
+interface vehicleStatusData {
     id: string | number;
-    lat: number;
-    lng: number
-    // Outras propriedades da sua localização
+    position: {
+        lat: number;
+        lng: number;
+    },
+    model?: string;
+    name?: string;
+    nameOwner?: string;
+    plate?: string;  
+    status?:string;
+    fleet?: string;
 }
 //     const [infowindowOpen, setInfowindowOpen] = useState(false);
 //     const [markerRef, marker] = useAdvancedMarkerRef();
@@ -43,29 +44,33 @@ interface LocationData {
 //     );
 // };
 
-export const MovingMarker = () => {
+export default function MovingMarker() {
     const { locations } = useContext(VehicleContext);
-    const [position, setPosition] = useState<LocationData[]>([]);
+    const [vehicleStatus, setVehicleStatus] = useState<vehicleStatusData[]>();
 
     useEffect(() => {
         if (locations && locations.length > 0) {
-            const positionsArr = locations.map((loc: any, index: number) => ({
-                lat: loc.lat,
-                lng: loc.lng,
-                id: index, // Ou algum ID único da sua data
+            console.log("LOC", locations);
+            const vehicleStatusArr = locations.map((loc: any, index: number) => ({
+                id: index,
+                position: { 
+                    lat: loc.lat,
+                    lng: loc.lng,
+                },                
+                name: loc.name,                
+                plate: loc.plate,
+                fleet: loc.fleet
             }));
-            setPosition(positionsArr);
+            setVehicleStatus(vehicleStatusArr);
         } else {
-            setPosition([]);
+            setVehicleStatus([]);
         }
-    }, [locations]);
-
-    console.log("POS", position);
+    }, [locations]);    
 
     return (
         <>
-            {position.map((item: LocationData) => (
-                <MapMarker key={`${item.id}a`} position={item} />
+            {vehicleStatus?.map((item: vehicleStatusData) => (
+                <MapMarker key={`${item.id}a`} vehicle={item} />
             ))}
         </>
     );

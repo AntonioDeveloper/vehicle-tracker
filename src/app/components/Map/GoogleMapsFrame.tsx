@@ -1,6 +1,6 @@
 import React from 'react';
 import {APIProvider, Map} from '@vis.gl/react-google-maps';
-import { MovingMarker } from './moving-marker';
+import MovingMarker from './MovingMarker';
 
 const GoogleMapsFrame = () => (
   <APIProvider apiKey="AIzaSyDnS_1Op_hQDJK9r5ZzEFCi6b5u_Rhc-F4">
