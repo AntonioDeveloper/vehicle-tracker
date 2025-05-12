@@ -1,10 +1,14 @@
-import React, { createContext, useEffect, useState, ReactNode } from "react";
-import acessAPI from "../services/api";
+import React, { createContext, ReactNode } from "react";
+import useVehicleData from "../services/api"; 
 import { Vehicle, LocationVehicle } from "../types/vehiclesApiTypes";
 
 interface VehicleContextValue {
-  vehicles: Vehicle[];
-  locations: LocationVehicle[]; 
+  vehicles: Vehicle[] | undefined; 
+  locations: LocationVehicle[] | undefined; 
+  isLoading: boolean;
+  isError: boolean;
+  error: any;
+  refetch: () => void; 
 }
 
 interface VehicleProviderProps {
@@ -12,53 +16,26 @@ interface VehicleProviderProps {
 }
 
 const VehicleContext = createContext<VehicleContextValue>({
-  vehicles: [],
-  locations: [], 
+  vehicles: undefined,
+  locations: undefined,
+  isLoading: false,
+  isError: false,
+  error: null,
+  refetch: () => {},
 });
 
 export default VehicleContext;
 
 export function VehicleProvider(props: VehicleProviderProps) {
-  
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const { data, isLoading, isError, error, refetch } = useVehicleData({
+    refetchInterval: 30000, 
+  });
 
-  const [locations, setLocations] = useState<LocationVehicle[]>([]);
-
-  async function getVehicleData() {
-    try {
-      const vehicleData = await acessAPI();
-
-      if (vehicleData && vehicleData.vehicles) {
-        setVehicles(vehicleData.vehicles);
-      } else {
-        setVehicles([]); 
-        console.warn("Dados de veículos não encontrados ou em formato inesperado.");
-      }
-
-      if (vehicleData && vehicleData.locations) { 
-        setLocations(vehicleData.locations); 
-      } else {
-        setLocations([]); 
-        console.warn("Dados de localizações não encontrados ou em formato inesperado.");
-      }
-    } catch (error) {
-      console.error("Erro ao buscar dados dos veículos:", error);
-      setVehicles([]); 
-      setLocations([]); 
-    }
-  }
-
-  //120000
-
-  useEffect(() => {
-    setInterval(() => {
-      console.log("Run interval")
-      getVehicleData();
-    }, 30000);
-  }, []);
+  const vehicles = data?.vehicles;
+  const locations = data?.locations;
 
   return (
-    <VehicleContext.Provider value={{ vehicles, locations }}>
+    <VehicleContext.Provider value={{ vehicles, locations, isLoading, isError, error, refetch }}>
       {props.children}
     </VehicleContext.Provider>
   );

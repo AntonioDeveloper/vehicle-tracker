@@ -32,7 +32,7 @@ interface MapMarkerProps {
 }
 
 export default function MapMarker(props: MapMarkerProps) {
-    console.log("props", props.vehicle);
+    //console.log("props", props.vehicle);
     const [infowindowOpen, setInfowindowOpen] = useState(false);
     const [markerRef, marker] = useAdvancedMarkerRef();
 
@@ -55,7 +55,7 @@ export default function MapMarker(props: MapMarkerProps) {
                 >
                   <p className="text-zinc-950">Frota: {props.vehicle.fleet}</p>
                   <p className="text-zinc-950">Nome: {props.vehicle.name}</p>
-                  <p className="text-zinc-950">Placa: {props.vehicle.name}</p>
+                  <p className="text-zinc-950">Placa: {props.vehicle.plate}</p>
                   <Link href={`http://maps.google.com/maps?q=${props.vehicle.position.lat},${props.vehicle.position.lng}`} target="_blank" className="text-zinc-950">Posição: {`http://maps.google.com/maps?q=${props.vehicle.position.lat},${props.vehicle.position.lng}`}</Link>
                 </InfoWindow>
             )}

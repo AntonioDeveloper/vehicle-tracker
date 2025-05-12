@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 const axiosInstance = axios.create({
@@ -11,13 +12,15 @@ const axiosInstance = axios.create({
   },
 });
 
-//type: string, page: number
-
-export default async function acessAPI() {
+async function fetchVehicleData(): Promise<{
+  vehicles: any[];
+  locations: any[];
+}> {
   try {
     const response = await axiosInstance.get(
-      `/recruitment/vehicles/list-with-paginate?type=${'tracked'}&page=${1}&perPage=${40}`
+      `/recruitment/vehicles/list-with-paginate?type=tracked&page=1&perPage=40`
     );
+    console.log('ATUALIZEI', response);
     return {
       vehicles: response.data.content.vehicles,
       locations: response.data.content.locationVehicles,
@@ -27,3 +30,19 @@ export default async function acessAPI() {
     throw error;
   }
 }
+
+interface UseVehicleDataOptions {
+  refetchInterval?: number;
+  enabled?: boolean;
+}
+
+function useVehicleData(options?: UseVehicleDataOptions) {
+  return useQuery({
+    queryKey: ['vehicleData'],
+    queryFn: fetchVehicleData,
+    refetchInterval: options?.refetchInterval,
+    enabled: options?.enabled !== undefined ? options.enabled : true,
+  });
+}
+
+export default useVehicleData;
