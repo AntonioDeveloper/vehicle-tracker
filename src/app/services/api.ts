@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { LocationVehicle, Vehicle } from '../types/vehiclesApiTypes';
 
 const axiosInstance = axios.create({
   baseURL: 'https://develop-back-rota.rota361.com.br',
@@ -13,8 +14,9 @@ const axiosInstance = axios.create({
 });
 
 async function fetchVehicleData(): Promise<{
-  vehicles: any[];
-  locations: any[];
+  vehicles: Vehicle[];
+  locations: LocationVehicle[];
+  totalPages: number;
 }> {
   try {
     const response = await axiosInstance.get(
@@ -24,6 +26,7 @@ async function fetchVehicleData(): Promise<{
     return {
       vehicles: response.data.content.vehicles,
       locations: response.data.content.locationVehicles,
+      totalPages: response.data.content.totalPages,
     };
   } catch (error: any) {
     console.error('Erro ao buscar lista de veículos:', error);
@@ -36,13 +39,19 @@ interface UseVehicleDataOptions {
   enabled?: boolean;
 }
 
-function useVehicleData(options?: UseVehicleDataOptions) {
-  return useQuery({
-    queryKey: ['vehicleData'],
+function useInfiniteVehicleData(options: UseVehicleDataOptions) {
+  return useInfiniteQuery({
+    queryKey: ['infiniteVehicleData'],
     queryFn: fetchVehicleData,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.totalPages > allPages.length) {
+        return allPages.length + 1;
+      }
+      return undefined;
+    },
     refetchInterval: options?.refetchInterval,
-    enabled: options?.enabled !== undefined ? options.enabled : true,
+    initialPageParam: 1,
   });
 }
 
-export default useVehicleData;
+export default useInfiniteVehicleData;

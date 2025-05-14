@@ -1,5 +1,6 @@
 'use client'
 
+import List from "./components/List/List";
 import GoogleMapsFrame from "./components/Map/GoogleMapsFrame";
 import Header from "./components/header/Header";
 import { VehicleProvider } from "./context/VehicleContext";
@@ -15,6 +16,7 @@ export default function Home() {
       <div className="text-white w-full h-full px-10">
         <Header />
         <GoogleMapsFrame />
+        <List />
       </div>
     </VehicleProvider>
     </QueryClientProvider>

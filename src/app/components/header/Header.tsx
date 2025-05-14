@@ -1,3 +1,5 @@
+import SearchBar from "./SearchBar";
+
 export default function Header() {
   return (
     <div className="flex flex-col w-full h-[150px] px-20 py-5">
@@ -12,12 +14,7 @@ export default function Header() {
             <label htmlFor="outros">Outros</label>
           </form>
         </div>
-        <div className="w-1/2 flex justify-end">
-          <form className="">
-            <input className="" type="text" id="busca" name="busca" placeholder="Buscar por placa ou frota" minLength={10} maxLength={20} size={20} />
-            <input className="" type="submit" value="Buscar" />
-          </form>
-        </div>
+        <SearchBar />
       </div>
     </div>
   )

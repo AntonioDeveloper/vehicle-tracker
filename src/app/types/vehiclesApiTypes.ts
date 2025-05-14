@@ -11,7 +11,7 @@ export interface Content {
   page: number;
   perPage: number;
 }
-
+// "max-h-[400px] overflow-y-auto"
 export interface Vehicle {
   id: string;
   plate: string;
