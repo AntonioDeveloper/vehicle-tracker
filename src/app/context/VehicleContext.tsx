@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode } from "react";
+import React, { createContext, ReactNode, useState } from "react";
 import useInfiniteVehicleData  from "../services/api"; 
 import { Vehicle, LocationVehicle } from "../types/vehiclesApiTypes";
 import { InfiniteQueryObserverResult } from "@tanstack/react-query";
@@ -12,6 +12,8 @@ interface VehicleContextValue {
   refetch: () => void; 
   fetchNextPage: () => Promise<any>;
   hasNextPage: boolean;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface VehicleProviderProps {
@@ -31,6 +33,8 @@ const VehicleContext = createContext<VehicleContextValue>({
     totalPages: number;
   }, unknown>),
   hasNextPage: false,
+  searchTerm: "",
+  setSearchTerm: () => ""
 });
 
 export default VehicleContext;
@@ -40,11 +44,13 @@ export function VehicleProvider(props: VehicleProviderProps) {
     refetchInterval: 30000, 
   });
 
+  const [searchTerm, setSearchTerm ] = useState("");
+
   const vehicles = data?.pages.flatMap(page => page.vehicles) || undefined;
   const locations = data?.pages.flatMap(page => page.locations) || undefined;
 
   return (
-    <VehicleContext.Provider value={{ vehicles, locations, isLoading, isError, error, refetch, fetchNextPage, hasNextPage }}>
+    <VehicleContext.Provider value={{ vehicles, locations, isLoading, isError, error, refetch, fetchNextPage, hasNextPage, searchTerm, setSearchTerm }}>
       {props.children}
     </VehicleContext.Provider>
   );

@@ -1,11 +1,15 @@
-import {useState, useEffect, ChangeEvent } from "react";
+import VehicleContext from "@/app/context/VehicleContext";
+import {useState, useEffect, ChangeEvent, useContext } from "react";
 
 export default function SearchBar() {
 
   const [inputVal, setInputVal] = useState("");
 
+  const { setSearchTerm } = useContext(VehicleContext);
+
  useEffect(() => {
-  console.log("inputVal", inputVal)
+  setSearchTerm(inputVal);
+  // console.log("inputVal", inputVal)
  }, [inputVal]);
 
   return (

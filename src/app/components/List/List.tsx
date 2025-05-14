@@ -4,11 +4,13 @@ import { LocationVehicle, Vehicle } from "@/app/types/vehiclesApiTypes";
 
 export default function List() {
 
-  const {vehicles, locations } = useContext(VehicleContext);
+  const {vehicles, locations, searchTerm } = useContext(VehicleContext);
 
   const fleet = locations?.map((item: LocationVehicle) => item.fleet);
 
-  console.log("vehicles", vehicles, "locations", locations, "fleet", fleet);
+  //console.log("vehicles", vehicles, "locations", locations, "fleet", fleet);
+
+  console.log("searchTerm", searchTerm);
 
   return (
     <div className="">
