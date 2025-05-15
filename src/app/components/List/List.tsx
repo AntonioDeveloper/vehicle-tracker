@@ -8,9 +8,13 @@ export default function List() {
 
   const fleet = locations?.map((item: LocationVehicle) => item.fleet);
 
-  //console.log("vehicles", vehicles, "locations", locations, "fleet", fleet);
+  const vehiclesFleetArray = vehicles?.map((v, index) => {
+    return { ...v, fleet: fleet?.[index]};
+  })
 
-  console.log("searchTerm", searchTerm);
+  let searchResult: Vehicle | undefined = vehiclesFleetArray?.find((v) => v.plate === searchTerm || v.fleet === searchTerm) ;
+
+  console.log("searchResult", searchResult);
 
   return (
     <div className="">
@@ -24,23 +28,32 @@ export default function List() {
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
-          
-            {vehicles?.map((item: Vehicle, index: number) => {
-              return (
-                <tr key={index}>
-                  <td>{item.plate}</td>
-                  <td>{fleet?.[index]}</td>
-                  <td>{item.type}</td>
-                  <td>{item.model}</td>
-                  <td>{item.status}</td>
-                </tr>
-              )
-            })}
+        <tbody>          
+        {
+        searchResult 
+        ? 
+        (
+        <tr key={searchResult.id}> 
+          <td>{searchResult.plate}</td>
+          <td>{searchResult.fleet}</td>
+          <td>{searchResult.type}</td>
+          <td>{searchResult.model}</td>
+          <td>{searchResult.status}</td>
+        </tr>
+          ) : (
+            vehicles?.map((item: Vehicle, index: number) => (
+              <tr key={index}>
+                <td>{item.plate}</td>
+                <td>{item.fleet}</td>
+                <td>{item.type}</td>
+                <td>{item.model}</td>
+                <td>{item.status}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
   )
 }
-
  
